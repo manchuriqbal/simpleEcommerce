@@ -1,11 +1,30 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use GuzzleHttp\Promise\Create;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
+Route::get('/', [App\Http\Controllers\HomeController::class, 'landing_page'])->name('home');
+
+Route::middleware(['auth'])->group(function () {
+    
+    Route::get('/cart', [App\Http\Controllers\CartController::class, 'index'])->name('cart');
+    Route::post('/add-to-cart/{productId}', [App\Http\Controllers\CartController::class, 'addToCart'])->name('addToCart');
+    Route::delete('/cart/{cart}/delete', [App\Http\Controllers\CartController::class, 'destroy'])->name('cart.destroy');
+    Route::patch('/cart/{cart}/decrement', [App\Http\Controllers\CartController::class, 'decrement'])->name('cart.decrement');
+    Route::patch('/cart/{cart}/increment', [App\Http\Controllers\CartController::class, 'increment'])->name('cart.increment');
+
+    
+    Route::get('/checkout', [App\Http\Controllers\OrderController::class, 'checkout'])->name('order.checkout');
+    Route::post('/place-order', [App\Http\Controllers\OrderController::class, 'place_order'])->name('order.place_order');
+    Route::get('/order-success', [App\Http\Controllers\OrderController::class, 'order_success'])->name('order.success');
 });
+
+
+
+
+
+
 
 Route::get('/dashboard', function () {
     return view('dashboard');
