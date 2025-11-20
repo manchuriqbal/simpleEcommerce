@@ -2,12 +2,17 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Http\Controllers\Controller;
-use App\Http\Requests\Auth\LoginRequest;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+
+use App\Models\Cart;
 use Illuminate\View\View;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Session;
+use App\Http\Requests\Auth\LoginRequest;
 
 class AuthenticatedSessionController extends Controller
 {
@@ -22,13 +27,75 @@ class AuthenticatedSessionController extends Controller
     /**
      * Handle an incoming authentication request.
      */
+    // public function sessionCheck()
+    // {
+    //     try {
+    //         DB::beginTransaction();
+    //         // Authenticated
+    //         $request->authenticate();
+    //         $request->session()->regenerate();
+
+    //         // Move Cart from session to Database
+    //         $carts = Session::get('cart', []);
+    //         if (empty($carts)) {
+    //             return redirect()->route('home')->with('waring', 'there is no Cart!');
+    //         }
+
+    //         foreach ($carts as $cart) {
+
+    //             Cart::updateOrCreate([
+    //                 'product_id' => $cart['product_id'],
+    //                 'quantity' => $cart['quantity'],
+    //                 'user_id' => 1,
+    //             ]);
+    //         }
+    //         Session::forget('cart');
+    //         Session::flash('Success', 'Session Cart Clear and Add Database!');
+    //         DB::commit();
+
+    //        return redirect()->intended(route('home', absolute: false));
+
+    //     } catch (\Exception $e) {
+    //         DB::rollBack();
+    //         Log::error($e->getMessage());
+
+    //         return back()->withInput()->withErrors(['error' => 'An error occurred. All changes were reverted.']);
+    //     }
+    // }
+
     public function store(LoginRequest $request): RedirectResponse
     {
-        $request->authenticate();
+        try {
+            DB::beginTransaction();
+            // Authenticated
+            $request->authenticate();
+            $request->session()->regenerate();
 
-        $request->session()->regenerate();
+            // Move Cart from session to Database
+            $carts = Session::get('cart', []);
+            if (empty($carts)) {
+                return redirect()->route('home')->with('waring', 'there is no Cart!');
+            }
 
-        return redirect()->intended(route('home', absolute: false));
+            foreach ($carts as $cart) {
+
+                Cart::updateOrCreate([
+                    'product_id' => $cart['product_id'],
+                    'quantity' => $cart['quantity'],
+                    'user_id' => auth()->user()->id,
+                ]);
+            }
+            Session::forget('cart');
+            Session::flash('Success', 'Session Cart Clear and Add Database!');
+            DB::commit();
+
+            return redirect()->intended(route('home', absolute: false));
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error($e->getMessage());
+
+            return back()->withInput()->withErrors(['error' => 'An error occurred. All changes were reverted.']);
+        }
     }
 
     /**

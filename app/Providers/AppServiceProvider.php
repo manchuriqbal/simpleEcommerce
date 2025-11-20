@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Models\Cart;
 use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
@@ -23,22 +24,23 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Paginator::useBootstrap();
-        
+
         View::composer('*', function ($view) {
-        $user = auth()->user();
-        $cartCount = 0;
+            $user = auth()->user();
+            $carts = Session()->get('cart', []);
 
-        if ($user) {
-            $cartCount = Cart::where('user_id', $user->id)->count();
-        }
+            $cartCount = 0;
 
-        $view->with('cartCount', $cartCount);
+            if ($carts) {
+                $cartCount = count($carts);
+            }
 
+            $view->with('cartCount', $cartCount);
         });
         View::composer('*', function ($view) {
-        $user = auth()->user();
-        
-        $view->with('user', $user);
+            $user = auth()->user();
+
+            $view->with('user', $user);
         });
     }
 }

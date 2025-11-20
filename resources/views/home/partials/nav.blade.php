@@ -22,6 +22,7 @@
                     </ul>
                 </li>
             </ul>
+            
             @if (!auth()->check())
                 <div class="menu-btn  me-2">
                     <a class="btn  btn-outline-dark" href="{{ route('login') }}">Login</a>

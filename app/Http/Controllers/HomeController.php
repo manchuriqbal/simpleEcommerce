@@ -4,12 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
 
 class HomeController extends Controller
 {
-   public function landing_page(){
+   public function landing_page()
+   {
 
-    $products = Product::latest()->paginate(12);
-    return view('home.landing-page', compact('products'));
+      $products = Product::latest()->paginate(12);
+      return view('home.landing-page', compact('products'));
    }
 }

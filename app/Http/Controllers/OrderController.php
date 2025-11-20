@@ -25,44 +25,26 @@ class OrderController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function checkout()
-    {
-        $user = auth()->user();
-        $carts = Cart::with('product')
-            ->whereUserId($user->id)
-            ->get();
-        $cartCount = 0;
-        $totalAmount = 0;
-        foreach ($carts as $cart ) {
-            $totalAmount += $cart->product->price * $cart->quantity;
-            $cartCount += 1*$cart->quantity;
-        }
-        
-        return view('home.pages.checkout')->with([
-            'carts' => $carts,
-            'totalAmount' => $totalAmount,
-            'user' => $user,
-            'cartCount' => $cartCount,
-        ]);
-    }
 
-    public function place_order(Request $request){
+
+    public function place_order(Request $request)
+    {
         $validateData = $request->validate([
             'phone' => ['required',  'regex:/^\+?[0-9]{11,14}$/'],
             'address' => ['required'],
         ]);
-        
+
         // save user
         $user = auth()->user();
 
         DB::beginTransaction();
         try {
-           
-            
+
+
             $user->phone = $validateData['phone'];
             $user->address = $validateData['address'];
             $user->save();
-    
+
 
             // save order
             $cartItems = Cart::with('product')
@@ -70,7 +52,7 @@ class OrderController extends Controller
                 ->get();
 
             $totalAmount = 0;
-            foreach ($cartItems as $cart ) {
+            foreach ($cartItems as $cart) {
                 $totalAmount += $cart->product->price * $cart->quantity;
             }
             // $order = Order::create([
@@ -86,7 +68,7 @@ class OrderController extends Controller
 
 
             // Save OrderItems
-            foreach ($cartItems as $item ) {
+            foreach ($cartItems as $item) {
                 $order_item = new OrderItem();
                 $order_item->order_id = $order->id;
                 $order_item->product_id = $item->product->id;
@@ -102,20 +84,18 @@ class OrderController extends Controller
             }
 
             Cart::whereUserId($user->id)->delete();
-            
+
             DB::commit();
 
             return redirect()->route('order.success')->with('success', 'Order Place Succssfully!');
-
         } catch (Exception $e) {
             DB::rollBack();
             return back()->with('error', 'There was a problem in your code: ' . $e->getMessage());
         }
-        
-        
     }
 
-    public function order_success(){
+    public function order_success()
+    {
         dd('Successfully Placed Oder!');
     }
 
