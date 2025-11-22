@@ -14,8 +14,9 @@ return new class extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
-            $table->decimal('total_amount', 6,2);
-            $table->enum('status', ['pending','confirmed','shipped','completed','cancelled']);
+            $table->string('order_code');
+            $table->decimal('total_amount', 6, 2);
+            $table->enum('status', ['pending', 'confirmed', 'shipped', 'completed', 'cancelled']);
             $table->foreignIdFor(User::class)->onDelete('restrict')->onUpdate('restrict');
             $table->timestamps();
         });

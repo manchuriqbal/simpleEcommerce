@@ -22,35 +22,73 @@
                     </ul>
                 </li>
             </ul>
-            
-            @if (!auth()->check())
-                <div class="menu-btn  me-2">
-                    <a class="btn  btn-outline-dark" href="{{ route('login') }}">Login</a>
-                </div>
-                <div class="menu-btn me-2">
-                    <a class="btn btn-outline-dark" href="{{ route('register') }}">Registation</a>
-                </div>
-            @else
-
-                <form action="{{ route('logout') }}" method="POST" class="d-inline me-2">
-                    @csrf
-                    <button type="submit" class="btn btn-outline-dark">Logout</button>
-                </form>
-
-                <div class="menu-btn me-2">
-                    <a class="btn btn-outline-dark" href=""><i class="bi bi-person"></i>{{auth()->user()->name}}</a>
-                </div>
-            @endif
+             
             @php
                 $routeName = auth()->check() ? 'cart.index' : 'guest.cart.index';
             @endphp
-            <form class="d-flex">
-                <a href="{{ route($routeName) }}" class="btn btn-outline-dark">
-                    <i class="bi-cart-fill me-1"></i>
-                    Cart
-                    <span class="badge bg-dark text-white ms-1 rounded-pill">{{$cartCount}}</span>
-                </a>
-            </form>
+            <div class="me-2">
+
+                <form class="d-flex">
+                    <a href="{{ route($routeName) }}" class="btn btn-outline-dark">
+                        <i class="bi-cart-fill me-1"></i>
+                        Cart
+                        <span class="badge bg-dark text-white ms-1 rounded-pill">{{ $cartCount }}</span>
+                    </a>
+                </form>
+            </div>
+
+            @guest
+            <li class="nav-item dropdown me-2">
+                    <a class="btn btn-outline-dark dropdown-toggle" href="#" id="userDropdown" role="button"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-person"></i> Guest
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                        <li><a class="dropdown-item" href="{{ route('login') }}">Login</a></li>
+                        <li><a class="dropdown-item" href="{{ route('register') }}">Registation</a></li>
+                        
+                    </ul>
+                </li>
+               
+            @endguest
+            @auth
+                <li class="nav-item dropdown me-2">
+                    <a class="btn btn-outline-dark dropdown-toggle" href="#" id="userDropdown" role="button"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-person"></i> {{ auth()->user()->name }}
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                        <li><a class="dropdown-item" href="{{route('profile.me')}}">Profile</a></li>
+                        <li><a class="dropdown-item" href="">My Orders</a></li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li>
+                            <form action="{{route('logout')}}" method="POST" class="m-0">
+                                @csrf
+                                <button type="submit" class="dropdown-item text-danger">Logout</button>
+                            </form>
+                        </li>
+                    </ul>
+                </li>
+                @endauth
         </div>
     </div>
 </nav>
+
+
+<script>
+    const btn = document.getElementById('userBtn');
+    const menu = document.getElementById('userMenu');
+
+    btn.addEventListener('click', () => {
+        menu.classList.toggle('hidden');
+    });
+
+    // Close when clicking outside
+    document.addEventListener('click', (e) => {
+        if (!btn.contains(e.target) && !menu.contains(e.target)) {
+            menu.classList.add('hidden');
+        }
+    });
+</script>

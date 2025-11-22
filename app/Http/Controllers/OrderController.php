@@ -7,6 +7,7 @@ use App\Models\Cart;
 use App\Models\User;
 use App\Models\Order;
 use App\Models\OrderItem;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests\StoreOrderRequest;
@@ -61,6 +62,7 @@ class OrderController extends Controller
             //     'status' => 'pending',
             // ]);
             $order = new Order();
+            $order->order_code = Str::random(3) . '-' . Date('Ymd');
             $order->user_id = $user->id;
             $order->total_amount = $totalAmount;
             $order->status = 'pending';
@@ -84,19 +86,21 @@ class OrderController extends Controller
             }
 
             Cart::whereUserId($user->id)->delete();
-
             DB::commit();
 
-            return redirect()->route('order.success')->with('success', 'Order Place Succssfully!');
+            return redirect()->route('order.success', $order->order_code)->with('success', 'Order Place Succssfully!');
         } catch (Exception $e) {
             DB::rollBack();
             return back()->with('error', 'There was a problem in your code: ' . $e->getMessage());
         }
     }
 
-    public function order_success()
+    public function order_success($order_code)
     {
-        dd('Successfully Placed Oder!');
+        $order = Order::with('user')->where('order_code', $order_code)->first();
+        return view('home.order.success-order')->with([
+            'order' => $order,
+        ]);
     }
 
 

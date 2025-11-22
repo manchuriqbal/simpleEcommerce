@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Models\User;
 use App\Models\Order;
+use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -19,7 +20,8 @@ class OrderFactory extends Factory
     public function definition(): array
     {
         return [
-            'total_amount' => $this->faker->numberBetween(150,3000),
+            'order_code' => Str::random(3) . '-' . Date('Ymd'),
+            'total_amount' => $this->faker->numberBetween(150, 3000),
             'status' =>  $this->faker->randomElement(['pending', 'confirmed', 'shipped', 'completed', 'cancelled']),
             'user_id' => User::inRandomOrder()->first()->id,
         ];

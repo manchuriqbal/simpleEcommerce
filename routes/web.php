@@ -9,7 +9,9 @@ Route::get('/', [App\Http\Controllers\HomeController::class, 'landing_page'])->n
 Route::middleware(['auth'])->group(function () {
     Route::get('/checkout', [App\Http\Controllers\CheckoutController::class, 'checkout'])->name('checkout');
     Route::post('/place-order', [App\Http\Controllers\OrderController::class, 'place_order'])->name('order.place_order');
-    Route::get('/order-success', [App\Http\Controllers\OrderController::class, 'order_success'])->name('order.success');
+    Route::get('/order-success/{order_code}/', [App\Http\Controllers\OrderController::class, 'order_success'])->name('order.success');
+
+    Route::get('/me', [App\Http\Controllers\ProfileController::class, 'me'])->name('profile.me');
 });
 
 
