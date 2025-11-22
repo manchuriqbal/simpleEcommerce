@@ -32,8 +32,10 @@
                                 <div class="text-center">
                                     {{-- <a class="btn btn-outline-dark mt-auto"
                                         href="{{ route('addToCart', $product->id) }}">Add to cart</a> --}}
-
-                                    <form action="{{ route('addToCart', $product->id) }}" method="post">
+                                    @php
+                                        $routeName = auth()->check() ? 'cart.add' : 'guest.cart.add';
+                                    @endphp
+                                    <form action="{{ route($routeName, $product->id) }}" method="post">
                                         @csrf
                                         <input type="hidden" name="quantity" value="1">
                                         <input class="btn btn-outline-dark mt-auto" type="submit" value="Add to cart">

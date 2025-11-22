@@ -26,17 +26,28 @@ class AppServiceProvider extends ServiceProvider
         Paginator::useBootstrap();
 
         View::composer('*', function ($view) {
-            $user = auth()->user();
-            $carts = Session()->get('cart', []);
-
             $cartCount = 0;
+            if (!auth()->check()) {
+                $carts = Session()->get('cart', []);
+                $cartCount = 0;
 
-            if ($carts) {
-                $cartCount = count($carts);
+                if ($carts) {
+                    $cartCount = count($carts);
+                }
+
+                $view->with('cartCount', $cartCount);
+            } else {
+                $user = auth()->user();
+                $carts = Cart::where('user_id', $user->id)->get();
+                $cartCount = 0;
+
+                if ($carts->count() >= 1) {
+                    $cartCount = $carts->count();
+                }
             }
-
             $view->with('cartCount', $cartCount);
         });
+
         View::composer('*', function ($view) {
             $user = auth()->user();
 

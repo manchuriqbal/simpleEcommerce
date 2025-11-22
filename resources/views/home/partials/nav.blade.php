@@ -41,8 +41,11 @@
                     <a class="btn btn-outline-dark" href=""><i class="bi bi-person"></i>{{auth()->user()->name}}</a>
                 </div>
             @endif
+            @php
+                $routeName = auth()->check() ? 'cart.index' : 'guest.cart.index';
+            @endphp
             <form class="d-flex">
-                <a href="{{ route('cart') }}" class="btn btn-outline-dark">
+                <a href="{{ route($routeName) }}" class="btn btn-outline-dark">
                     <i class="bi-cart-fill me-1"></i>
                     Cart
                     <span class="badge bg-dark text-white ms-1 rounded-pill">{{$cartCount}}</span>

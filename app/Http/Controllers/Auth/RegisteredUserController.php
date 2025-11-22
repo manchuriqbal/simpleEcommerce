@@ -41,6 +41,7 @@ class RegisteredUserController extends Controller
 
         try {
             DB::beginTransaction();
+
             // User Register and Authentication
             $user = User::create([
                 'name' => $request->name,
@@ -54,20 +55,27 @@ class RegisteredUserController extends Controller
 
             // Move Cart from session to Database
             $carts = Session::get('cart', []);
+
+            if (!empty($carts)) {
+                foreach ($carts as $cart) {
+                    Cart::updateOrCreate(
+                        [
+                            'product_id' => $cart['product_id'],
+                            'user_id' => auth()->user()->id,
+                        ],
+                        [
+                            'quantity' => $cart['quantity'],
+                        ]
+                    );
+                }
+                Session::forget('cart');
+                Session::flash('Success', 'Session Cart Clear and Add Database!');
+            }
+            DB::commit();
+
             if (empty($carts)) {
                 return redirect()->route('home')->with('waring', 'there is no Cart!');
             }
-
-            foreach ($carts as $cart) {
-                Cart::updateOrCreate([
-                    'product_id' => $cart['product_id'],
-                    'quantity' => $cart['quantity'],
-                    'user_id' => auth()->user()->id,
-                ]);
-            }
-            Session::forget('cart');
-            Session::flash('Success', 'Session Cart Clear and Add Database!');
-            DB::commit();
 
             return redirect(route('home', absolute: false));
         } catch (\Exception $e) {
