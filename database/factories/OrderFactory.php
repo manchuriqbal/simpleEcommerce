@@ -22,7 +22,7 @@ class OrderFactory extends Factory
         return [
             'order_code' => Str::random(3) . '-' . Date('Ymd'),
             'total_amount' => $this->faker->numberBetween(150, 3000),
-            'status' =>  $this->faker->randomElement(['pending', 'confirmed', 'shipped', 'completed', 'cancelled']),
+            'status' =>  $this->faker->randomElement(['pending', 'confirmed', 'completed', 'cancelled']),
             'user_id' => User::inRandomOrder()->first()->id,
         ];
     }

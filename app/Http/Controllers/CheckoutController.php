@@ -20,7 +20,7 @@ class CheckoutController extends Controller
             $cartCount += 1 * $cart->quantity;
         }
 
-        return view('home.pages.checkout')->with([
+        return view('home.checkout.index')->with([
             'carts' => $carts,
             'totalAmount' => $totalAmount,
             'user' => $user,

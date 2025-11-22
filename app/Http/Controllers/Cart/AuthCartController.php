@@ -24,7 +24,7 @@ class AuthCartController extends Controller
             }
         }
 
-        return view('home.pages.cart', [
+        return view('home.cart.index', [
             'cartProducts' => $carts,
             'totalAmount' => $totalAmount,
         ]);

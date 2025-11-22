@@ -8,12 +8,13 @@ use App\Http\Requests\UpdateCategoryRequest;
 
 class CategoryController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+
     public function index()
     {
-        //
+        $categories = Category::with('products')->get();
+        return view('home.category.index')->with([
+            'categories' => $categories,
+        ]);
     }
 
     /**

@@ -8,7 +8,8 @@
             <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
                 <li class="nav-item"><a class="nav-link active" aria-current="page" href="{{ route('home') }}">Home</a>
                 </li>
-                <li class="nav-item"><a class="nav-link" href="#!">About</a></li>
+                
+                <li class="nav-item"><a class="nav-link" href="{{route('categories.index')}}">Categories</a></li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button"
                         data-bs-toggle="dropdown" aria-expanded="false">Shop</a>
@@ -21,6 +22,7 @@
                         <li><a class="dropdown-item" href="#!">New Arrivals</a></li>
                     </ul>
                 </li>
+                <li class="nav-item"><a class="nav-link" href="#!">About</a></li>
             </ul>
              
             @php
@@ -59,7 +61,7 @@
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
                         <li><a class="dropdown-item" href="{{route('profile.me')}}">Profile</a></li>
-                        <li><a class="dropdown-item" href="">My Orders</a></li>
+                        <li><a class="dropdown-item" href="{{route('order.index')}}">My Orders</a></li>
                         <li>
                             <hr class="dropdown-divider">
                         </li>

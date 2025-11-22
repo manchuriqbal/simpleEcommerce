@@ -39,7 +39,7 @@
                     <!-- Buttons -->
                     <div class="d-flex justify-content-center gap-3 mt-3">
                         <a href="{{route('home')}}" class="btn btn-outline-primary px-4">Continue Shopping</a>
-                        <a href="#" class="btn btn-success px-4">View Order</a>
+                        <a href="{{route('order.show', $order->id)}}" class="btn btn-success px-4">View Order</a>
                     </div>
 
                 </div>

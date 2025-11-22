@@ -10,8 +10,10 @@ use App\Models\OrderItem;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\StoreOrderRequest;
 use App\Http\Requests\UpdateOrderRequest;
+use phpDocumentor\Reflection\Types\String_;
 
 class OrderController extends Controller
 {
@@ -20,7 +22,11 @@ class OrderController extends Controller
      */
     public function index()
     {
-        //
+        $user_id = Auth::user()->id;
+        $orders = Order::where('user_id', $user_id)->get();
+        return view('home.order.index')->with([
+            'orders' => $orders,
+        ]);
     }
 
     /**
@@ -112,9 +118,13 @@ class OrderController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Order $order)
+    public function show(String $id)
     {
-        //
+        $order = Order::with('items.product', 'user')->findOrFail($id);
+
+        return view('home.order.show')->with([
+            'order' => $order,
+        ]);
     }
 
     /**

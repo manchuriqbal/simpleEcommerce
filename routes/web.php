@@ -5,11 +5,15 @@ use GuzzleHttp\Promise\Create;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [App\Http\Controllers\HomeController::class, 'landing_page'])->name('home');
+Route::get('/categories', [App\Http\Controllers\CategoryController::class, 'index'])->name('categories.index');
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/checkout', [App\Http\Controllers\CheckoutController::class, 'checkout'])->name('checkout');
     Route::post('/place-order', [App\Http\Controllers\OrderController::class, 'place_order'])->name('order.place_order');
+
     Route::get('/order-success/{order_code}/', [App\Http\Controllers\OrderController::class, 'order_success'])->name('order.success');
+    Route::get('/orders', [App\Http\Controllers\OrderController::class, 'index'])->name('order.index');
+    Route::get('/orders/{id}/', [App\Http\Controllers\OrderController::class, 'show'])->name('order.show');
 
     Route::get('/me', [App\Http\Controllers\ProfileController::class, 'me'])->name('profile.me');
 });

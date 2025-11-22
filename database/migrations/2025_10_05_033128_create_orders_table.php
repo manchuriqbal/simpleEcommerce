@@ -16,7 +16,7 @@ return new class extends Migration
             $table->id();
             $table->string('order_code');
             $table->decimal('total_amount', 6, 2);
-            $table->enum('status', ['pending', 'confirmed', 'shipped', 'completed', 'cancelled']);
+            $table->enum('status', ['pending', 'confirmed', 'completed', 'cancelled']);
             $table->foreignIdFor(User::class)->onDelete('restrict')->onUpdate('restrict');
             $table->timestamps();
         });

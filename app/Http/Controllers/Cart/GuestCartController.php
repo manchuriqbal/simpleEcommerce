@@ -22,7 +22,7 @@ class GuestCartController extends Controller
             return $item['price'] * $item['quantity'];
         });
 
-        return view('home.pages.cart', [
+        return view('home.cart.index', [
             'cartProducts' => $carts,
             'totalAmount' => $totalAmount,
         ]);
